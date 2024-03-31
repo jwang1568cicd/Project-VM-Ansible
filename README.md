@@ -2,7 +2,7 @@
 Project with Vagrant VM for Ansible control node managing 2 WEB servers and 1 DB server
 
 1. There are few slightly differences when using AWS vs VM for key-profile and AWS-SecurityGroup setngs. 
-2. The contents are verified and this project data are based on VM settings with Virtualbox.
+2. The contents are verified and this project data are based on VM settings with Virtualbox. The provided Vagrantfile defined the control node, 2 web server and 1 db server used for the project.
 3. The Vagrantfile contains the settings for control, web01, web02 and db01.
 $ cat Vagrantfile
 Vagrant.configure("2") do |config|
