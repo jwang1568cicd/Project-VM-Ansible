@@ -1,0 +1,36 @@
+*** ansible-playbook https://spacelift.io/blog/ansible-tutorial
+
+root@control:~/vprofile/excerise1# ansible-playbook -v playbook.yml
+Using /etc/ansible/ansible.cfg as config file
+
+PLAY [Running CLI command] *****************************************************************************************
+
+TASK [Gathering Facts] *********************************************************************************************
+ok: [192.168.10.3]
+ok: [192.168.10.4]
+ok: [192.168.10.5]
+
+TASK [Run yum update command] **************************************************************************************
+changed: [192.168.10.3] => {"changed": true, "cmd": "sudo yum update", "delta": "0:00:00.541064", "end": "2024-03-19 15:42:00.331765", "msg": "", "rc": 0, "start": "2024-03-19 15:41:59.790701", "stderr": "", "stderr_lines": [], "stdout": "Loaded plugins: fastestmirror\nLoading mirror speeds from cached hostfile\n * base: mirror.fcix.net\n * extras: mirrors.raystedman.org\n * updates: la.mirrors.clouvider.net\nNo packages marked for update", "stdout_lines": ["Loaded plugins: fastestmirror", "Loading mirror speeds from cached hostfile", " * base: mirror.fcix.net", " * extras: mirrors.raystedman.org", " * updates: la.mirrors.clouvider.net", "No packages marked for update"]}
+changed: [192.168.10.4] => {"changed": true, "cmd": "sudo yum update", "delta": "0:00:00.815487", "end": "2024-03-19 15:42:00.890207", "msg": "", "rc": 0, "start": "2024-03-19 15:42:00.074720", "stderr": "", "stderr_lines": [], "stdout": "Last metadata expiration check: 0:03:35 ago on Tue 19 Mar 2024 03:38:25 PM UTC.\nDependencies resolved.\nNothing to do.\nComplete!", "stdout_lines": ["Last metadata expiration check: 0:03:35 ago on Tue 19 Mar 2024 03:38:25 PM UTC.", "Dependencies resolved.", "Nothing to do.", "Complete!"]}
+changed: [192.168.10.5] => {"changed": true, "cmd": "sudo yum update", "delta": "0:00:01.039523", "end": "2024-03-19 15:42:01.125423", "msg": "", "rc": 0, "start": "2024-03-19 15:42:00.085900", "stderr": "", "stderr_lines": [], "stdout": "Last metadata expiration check: 0:03:34 ago on Tue 19 Mar 2024 03:38:26 PM UTC.\nDependencies resolved.\nNothing to do.\nComplete!", "stdout_lines": ["Last metadata expiration check: 0:03:34 ago on Tue 19 Mar 2024 03:38:26 PM UTC.", "Dependencies resolved.", "Nothing to do.", "Complete!"]}
+
+PLAY RECAP *********************************************************************************************************
+192.168.10.3               : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0  
+192.168.10.4               : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0  
+192.168.10.5               : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0  
+
+root@control:~/vprofile/excerise1#
+
+
+
+root@control:~/vprofile/excerise1# cat playbook.yml
+---
+- name: Running CLI command
+  hosts: webservers
+  remote_user: vagrant
+
+  tasks:
+    - name: Run yum update command
+      shell: sudo yum update
+root@control:~/vprofile/excerise1#
