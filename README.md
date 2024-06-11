@@ -55,8 +55,7 @@ $ sudo apt install software-properties-common
 $ sudo add-apt-repository --yes --update ppa:ansible/ansible
 $ sudo apt install ansible
 
-5. use 'systemctl status ansible' to confirm the status of installation.
-
+5. use 'ansible --version' to confirm the status of installation. If you need help to provision the ssh passwordless login, check the README.sshpwdless or just proceed to next ansible verification section. 
 
 6. The following files will be used for this project: 
 inventory: this is the file describes the hosts to be engaged and related grouping. 

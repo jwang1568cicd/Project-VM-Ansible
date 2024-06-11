@@ -1,0 +1,9 @@
+---
+- name: Running CLI command
+  hosts: webservers
+  remote_user: vagrant
+
+  tasks:
+    - name: Run yum update command
+      shell: sudo yum update
+

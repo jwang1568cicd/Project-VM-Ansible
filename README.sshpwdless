@@ -1,0 +1,103 @@
+1. At Ansible server, use 'ssh-keygen' to generate the ssh key pair to be installed at nodes to be controlled.
+
+2. Using ssh-copy-id with vagrant account due to Virtualbox VM. For example, 'ssh-copy-id vagrant@192.168.10.3' copied the id_rsa.pub to the target nodes. Make sure the remote user is vagrant in this example, you will replace it with your environment settnig accordingly.
+
+3. If ssh key was copied properly, you should be able to ssh login without password the node to be accessed. If not working, troubleshoot it before moving forward.
+
+4. Here is the example after the passwordless ssh was properly setup. 
+4.1 Setup the inventory file or find the proper CLI for passing such parameters.
+4.2 Be careful with editing the YAML fiels, inventory and playbook.yml. Use yaml validator, https://www.yamllint.com/, for validating the yaml file having issues.
+
+root@vagrant:/etc/ansible# vi inventory
+root@vagrant:/etc/ansible# ansible-inventory -i inventory --list
+{
+    "_meta": {
+        "hostvars": {
+            "db01": {
+                "ansible_host": "192.168.10.5",
+                "ansible_ssh_private_key_file": "/root/.ssh/id_rsa",
+                "ansible_user": "vagrant"
+            },
+            "web01": {
+                "ansible_host": "192.168.10.3",
+                "ansible_ssh_private_key_file": "/root/.ssh/id_rsa",
+                "ansible_user": "vagrant"
+            },
+            "web02": {
+                "ansible_host": "192.168.10.4",
+                "ansible_ssh_private_key_file": "/root/.ssh/id_rsa",
+                "ansible_user": "vagrant"
+            }
+        }
+    },
+    "all": {
+        "children": [
+            "ungrouped",
+            "webservers",
+            "dbservers",
+            "dc_oregon"
+        ]
+    },
+    "dbservers": {
+        "hosts": [
+            "db01"
+        ]
+    },
+    "dc_oregon": {
+        "children": [
+            "webservers",
+            "dbservers"
+        ]
+    },
+    "webservers": {
+        "hosts": [
+            "web01",
+            "web02"
+        ]
+    }
+}
+root@vagrant:/etc/ansible#
+
+root@vagrant:/etc/ansible# !56
+ansible web01 -m ping  -i inventory
+web01 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+root@vagrant:/etc/ansible# vi playbook.yml
+root@vagrant:/etc/ansible# ansible-playbook -v playbook.yml -i inventory
+Using /etc/ansible/ansible.cfg as config file
+
+PLAY [Running CLI command] **************************************************************
+
+TASK [Gathering Facts] ******************************************************************
+fatal: [web02]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: ssh: connect to host 192.168.10.4 port 22: No route to host", "unreachable": true}
+ok: [web01]
+
+TASK [Run yum update command] ***********************************************************
+changed: [web01] => {"changed": true, "cmd": "sudo yum update", "delta": "0:00:04.828557", "end": "2024-06-11 22:15:47.058390", "msg": "", "rc": 0, "start": "2024-06-11 22:15:42.229833", "stderr": "", "stderr_lines": [], "stdout": "Loaded plugins: fastestmirror\nLoading mirror speeds from cached hostfile\n * base: mirror.fcix.net\n * epel: lolhost.mm.fcix.net\n * extras: abqix.mm.fcix.net\n * updates: mirrors.xtom.com\nNo packages marked for update", "stdout_lines": ["Loaded plugins: fastestmirror", "Loading mirror speeds from cached hostfile", " * base: mirror.fcix.net", " * epel: lolhost.mm.fcix.net", " * extras: abqix.mm.fcix.net", " * updates: mirrors.xtom.com", "No packages marked for update"]}
+
+PLAY RECAP ******************************************************************************
+web01                      : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+web02                      : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0
+
+root@vagrant:/etc/ansible#
+root@vagrant:/etc/ansible#
+root@vagrant:/etc/ansible# cat playbook.yml
+---
+- name: Running CLI command
+  hosts: webservers
+  remote_user: vagrant
+
+  tasks:
+    - name: Run yum update command
+      shell: sudo yum update
+root@vagrant:/etc/ansible#
+
+
+
+

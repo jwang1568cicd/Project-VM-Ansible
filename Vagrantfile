@@ -7,8 +7,9 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "web01" do |web01| 
-        web01.vm.box = "eurolinurx-vagrant/centos-stream-9"
-	#web01.vm.box = "centos/7"
+        #web01.vm.box = "eurolinurx-vagrant/centos-stream-9"
+	#modified on 6/11/2024 due to previous package is no longer available.
+	web01.vm.box = "geerlingguy/centos7"
         web01.vm.hostname = "web01" 
         web01.vm.network "private_network", ip: "192.168.10.3"
         #config.vm.provision "shell", inline: "ifup enp0s8", run: "always"
